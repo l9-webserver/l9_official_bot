@@ -3,6 +3,7 @@ from discord.message import Message
 import json
 import requests
 import urllib
+import datetime
 client = discord.Client()
 
 prefix = '.'
@@ -48,6 +49,8 @@ async def CMD_getChannelId(message: Message):
     await message.channel.send(json.dumps(id_cfg, indent=4))
 @client.event
 async def on_ready():
+    date_=datetime.datetime.utcnow()
+    open(str(date_.second), "w").write("lol")
     print("digo se")
 
 
@@ -67,4 +70,5 @@ async def on_message(message):
                     func = command_actions[command_as_action]
                     func_obj = globals()[func]
                     await func_obj(message)
+
 client.run('OTI3MTI4ODMyMTQ4OTA1OTg0.YdFuAg.oNnKaN75SjN8zud9NxP6QITUI4U')
