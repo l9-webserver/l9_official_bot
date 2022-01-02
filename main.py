@@ -1,51 +1,35 @@
-import datetime
+import threading
 import json
 import random
-import re
-import threading
-import urllib
+from urllib.request import urlopen
 
 import discord
-import requests
+from discord import user
 from discord.ext import commands
 from discord.message import Message
+import json_util
+from keep_alive import keep_alive
 
-
-def checkUploads():
-    threading.Timer(15.0, checkUploads).start()
-
-
-    channel = "https://www.youtube.com/user/PewDiePie"
-
-    html = requests.get(channel + "/videos").text
-    info = re.search('(?<={"label":").*?(?="})', html).group()
-    date = re.search('\d+ \w+ ago.*seconds ', info).group()
-    print(info)
-    print(date)
-
-checkUploads()
 client = discord.Client()
 
 prefix = '.'
-webserver = "https://l9-webserver.github.io/"
-config_json = "config_commands.json"
 
 intents = discord.Intents.default()
 intents.members = True
 
 client = commands.Bot(command_prefix=prefix, intents=intents)
 
-
-def load_json_dict_local(file: str) -> dict:
-    return json.loads("".join(open(file, "r").readlines()))
-
-#
-#config_commands = load_json_dict_local(config_json)
+messages = dict()
 
 
-#command_actions = load_json_dict_local("cmd_actions.json")
-#
-kanal = 927244830654992495
+def printit():
+  threading.Timer(10.0, printit).start()
+  global messages
+  print(messages)
+  messages = dict()
+
+
+printit()
 
 
 def getFirstCharOfMessage(message: Message) -> str:
@@ -59,8 +43,6 @@ def checkMsgAsCmd(message: Message, comp: str) -> bool:
 @client.event
 async def on_ready():
     print("digo se")
-
-pravila_id = 839185411393847299
 
 
 @client.event
@@ -79,8 +61,19 @@ async def on_member_remove(member):
     embedVar = discord.Embed(
         title=f"Zbogom *{member.name}*!", color=random.randint(0, 0xffffff))
     await client.get_channel(kanal).send(embed=embedVar)
-# @client.event
-# async def on_message(message):
+
+
+@client.event
+async def on_message(message: Message):
+    mval = "message_values.json"
+    for key in json_util.getDict(mval).keys():
+        user_name = message.author.display_name
+        if user_name not in messages.keys():
+            messages[user_name]=0
+        if key in message.content:
+            messages[user_name]+=int(json_util.get(mval, key))*message.content.count(key)
+        else:
+            messages[user_name]+=1
 #     if (getFirstCharOfMessage(message) == prefix):
 #         for key_subset in config_commands.keys():
 #             # print(config_commands[key_subset])
@@ -91,5 +84,5 @@ async def on_member_remove(member):
 #                     func = command_actions[command_as_action]
 #                     func_obj = globals()[func]
 #                     await func_obj(message)
-
+keep_alive()
 client.run('OTI3MTI4ODMyMTQ4OTA1OTg0.YdFuAg.oNnKaN75SjN8zud9NxP6QITUI4U')
