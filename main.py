@@ -67,4 +67,4 @@ async def on_message(message):
                     func = command_actions[command_as_action]
                     func_obj = globals()[func]
                     await func_obj(message)
-client.run('OTI3MTI4ODMyMTQ4OTA1OTg0.YdFuAg.570w8q0biNBgWcHzYfWfy5xR4N0')
+client.run('OTI3MTI4ODMyMTQ4OTA1OTg0.YdFuAg.oNnKaN75SjN8zud9NxP6QITUI4U')
