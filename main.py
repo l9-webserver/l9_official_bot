@@ -49,8 +49,6 @@ async def CMD_getChannelId(message: Message):
     await message.channel.send(json.dumps(id_cfg, indent=4))
 @client.event
 async def on_ready():
-    date_=datetime.datetime.utcnow()
-    open(str(date_.second), "w").write("lol")
     print("digo se")
 
 
