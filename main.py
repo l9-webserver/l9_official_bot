@@ -1,4 +1,3 @@
-from pymongo import collection
 import pymongo
 import json
 import asyncio
